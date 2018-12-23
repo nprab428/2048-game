@@ -33,7 +33,12 @@ class GameBoard(tk.Tk):
                 # store all cells as initially empty
                 self.cells[i][j] = {
                     'canvas_coords': (x1, y1), 'tile': None, 'tile_window': None}
+        self.bind_arrow_keys()
 
+        # create new game
+        self.new_game()
+
+    def bind_arrow_keys(self):
         self.bind('<Right>', lambda event,
                   dir='R': self.handle_move(dir))
         self.bind('<Left>', lambda event,
@@ -43,8 +48,9 @@ class GameBoard(tk.Tk):
         self.bind('<Up>', lambda event,
                   dir='U': self.handle_move(dir))
 
-        # create new game
-        self.new_game()
+    def unbind_arrow_keys(self):
+        for b in ['<Right>', '<Left>', '<Down>', '<Up>']:
+            self.unbind(b)
 
     def new_game(self):
         for i in range(4):
@@ -95,6 +101,7 @@ class GameBoard(tk.Tk):
         return False
 
     def handle_move(self, dir):
+        self.unbind_arrow_keys()
         move_occured = False
         iterators = {'R': {'i': list(reversed(range(3))), 'j': list(range(4))},
                      'L': {'i': list(range(1, 4)), 'j': list(range(4))},
@@ -115,6 +122,7 @@ class GameBoard(tk.Tk):
                             move_occured = True
         if move_occured:
             self.insert_new_tile()
+        self.bind_arrow_keys()
 
     def _get_prev_cell(self, target_i, target_j, dir):
         if dir not in ['L', 'R', 'U', 'D']:
