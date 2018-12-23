@@ -257,7 +257,8 @@ class Tile(tk.Frame):
                               256: {'bg': '#ECCB69', 'fg': '#F6FEFE'},
                               512: {'bg': '#ECC75A', 'fg': '#F6FEFE'},
                               1024: {'bg': '#ECC44C', 'fg': '#F6FEFE'},
-                              2048: {'bg': '#EBC32C', 'fg': '#F6FEFE'}}
+                              2048: {'bg': '#EBC32C', 'fg': '#F6FEFE'},
+                              4096: {'bg': '#63D994', 'fg': '#F6FEFE'}}
         self._color_tile()
         self.tile.pack(fill=tk.BOTH, expand=1)
 
