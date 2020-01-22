@@ -47,13 +47,9 @@ def create_menu(background):
         center=(NEW_GAME_BUTTON_POS_X, NEW_GAME_BUTTON_POS_Y))
     new_game = BackgroundItem(new_game_button, new_game_button_rect)
 
-    # create AI Mode button
-    AI_mode_button = create_menu_button('AI Mode')
-    AI_mode_button_rect = AI_mode_button.get_rect(
-        center=(AI_MODE_BUTTON_POS_X, AI_MODE_BUTTON_POS_Y))
-    AI_mode = BackgroundItem(AI_mode_button, AI_mode_button_rect)
+    # create AI Mode button (TODO)
 
-    return new_game, AI_mode
+    return new_game
 
 
 def create_game_over_message(background):
@@ -81,7 +77,7 @@ def main():
     # create board
     board, board_cells = create_board(screen)
     # create menu
-    new_game, AI_mode = create_menu(screen)
+    new_game = create_menu(screen)
     game_over = create_game_over_message(screen)
 
     # initialize Game
@@ -132,7 +128,6 @@ def main():
         screen.fill(BACKGROUND_COLOR)
         screen.blit(board, (BOARD_MARGIN, BOARD_MARGIN))
         screen.blit(new_game.item, new_game.rect.topleft)
-        screen.blit(AI_mode.item, AI_mode.rect.topleft)
         all_sprites.draw(screen)
         if game.is_game_over():
             screen.blit(game_over.item, game_over.rect)
