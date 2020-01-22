@@ -27,7 +27,7 @@ def create_board(background):
 
 
 # NamedTuple representing surfaces on game background
-BackgroundItem = namedtuple('BackgroundItem', ['item', 'pos'])
+BackgroundItem = namedtuple('BackgroundItem', ['item', 'rect'])
 
 
 def create_menu(background):
@@ -43,32 +43,33 @@ def create_menu(background):
 
     # create New Game button
     new_game_button = create_menu_button('New Game')
-    new_game_button_pos = new_game_button.get_rect(
+    new_game_button_rect = new_game_button.get_rect(
         center=(NEW_GAME_BUTTON_POS_X, NEW_GAME_BUTTON_POS_Y))
-    new_game = BackgroundItem(new_game_button, new_game_button_pos)
+    new_game = BackgroundItem(new_game_button, new_game_button_rect)
 
     # create AI Mode button
     AI_mode_button = create_menu_button('AI Mode')
-    AI_mode_button_pos = AI_mode_button.get_rect(
+    AI_mode_button_rect = AI_mode_button.get_rect(
         center=(AI_MODE_BUTTON_POS_X, AI_MODE_BUTTON_POS_Y))
-    AI_mode = BackgroundItem(AI_mode_button, AI_mode_button_pos)
+    AI_mode = BackgroundItem(AI_mode_button, AI_mode_button_rect)
 
     return new_game, AI_mode
 
 
 def create_game_over_message(background):
     text_background = pg.Surface(
-        (GAME_OVER_BACKGROUND_WIDTH, GAME_OVER_BACKGROUND_HEIGHT))
+        (BOARD_LENGTH, BOARD_LENGTH))
     text_background.fill(GAME_OVER_BACKGROUND_COLOR)
+    text_background.set_alpha(125)
     game_over_font = pg.font.Font(None, GAME_OVER_FONT_SIZE)
-    game_over_str = 'Game over :( would you like to play again?'
+    game_over_str = 'Game over!'
     game_over_text = game_over_font.render(
         game_over_str, True, GAME_OVER_TEXT_COLOR)
     center_text(game_over_text, text_background)
 
-    game_over_pos = text_background.get_rect(
-        center=((GAME_OVER_POS_X, GAME_OVER_POS_Y)))
-    return BackgroundItem(text_background, game_over_pos)
+    text_background_rect = text_background.get_rect(
+        topleft=(BOARD_MARGIN, BOARD_MARGIN))
+    return BackgroundItem(text_background, text_background_rect)
 
 
 def main():
@@ -105,7 +106,7 @@ def main():
 
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
                 mouse_pos = pg.mouse.get_pos()
-                if new_game.pos.collidepoint(mouse_pos):
+                if new_game.rect.collidepoint(mouse_pos):
                     game.new_game()
 
             if event.type == pg.KEYDOWN and event.key in arrow_keys and not any_moving:
@@ -130,11 +131,11 @@ def main():
         # redraw board
         screen.fill(BACKGROUND_COLOR)
         screen.blit(board, (BOARD_MARGIN, BOARD_MARGIN))
-        screen.blit(new_game.item, new_game.pos.topleft)
-        screen.blit(AI_mode.item, AI_mode.pos.topleft)
+        screen.blit(new_game.item, new_game.rect.topleft)
+        screen.blit(AI_mode.item, AI_mode.rect.topleft)
         all_sprites.draw(screen)
         if game.is_game_over():
-            screen.blit(game_over.item, game_over.pos.topleft)
+            screen.blit(game_over.item, game_over.rect)
 
         pg.display.update()
 
