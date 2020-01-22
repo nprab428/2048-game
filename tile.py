@@ -6,13 +6,15 @@ from utils import *
 class Tile(pg.sprite.Sprite):
     def __init__(self, coords_x, coords_y, board, num=2):
         pg.sprite.Sprite.__init__(self)
+        # (coords_x, coord_y) reflect tile coords on board
         self.coords_x, self.coords_y = coords_x, coords_y
         self.board = board
         self.num = num
-        self.speed = TILE_SPEED
+        self.speed = 0
         self.moving = False
-        # save off top-left pixels of current coords
+        # (target_x, target_y) and (cur_x, cur_y) are the top-left pixels of coords
         self.target_x, self.target_y = compute_board_pixels(coords_x, coords_y)
+        # since tile is initially stationary, (cur_x, cur_y) = (target_x, target_y)
         self.cur_x, self.cur_y = self.target_x, self.target_y
 
         self.image = pg.Surface((CELL_LENGTH, CELL_LENGTH))
@@ -43,6 +45,8 @@ class Tile(pg.sprite.Sprite):
         self.coords_x, self.coords_y = move.dest_x, move.dest_y
         self.target_x, self.target_y = compute_board_pixels(
             move.dest_x, move.dest_y)
+        self.speed = max(abs(self.target_x - self.cur_x),
+                         abs(self.target_y-self.cur_y))/TILE_MOVE_TIME
         self.absorbing_tile = move.absorbing_tile
 
     def update(self):
