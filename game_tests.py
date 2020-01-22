@@ -13,6 +13,8 @@ class TestGame(unittest.TestCase):
 
     def test_game_over(self):
         game = self._create_game('test_maps/test_game_over.csv')
+        game.handle_move('L')
+        game.insert_new_tile()
         self.assertTrue(game.is_game_over())
 
     def test_combine_cells_1(self):

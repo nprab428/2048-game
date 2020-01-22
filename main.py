@@ -7,7 +7,7 @@ from tile import Tile
 from game import *
 
 
-def create_board(screen):
+def create_board(background):
     board = pg.Surface((BOARD_LENGTH, BOARD_LENGTH))
     board.fill(BOARD_COLORS['background'])
     # create cells in COLUMN MAJOR order
@@ -22,11 +22,15 @@ def create_board(screen):
             # store rect of the empty cell in board_cells
             board_cells[i][j] = empty_cell.get_rect()
             board_cells[i][j].topleft = BOARD_MARGIN+x, BOARD_MARGIN+y
-    screen.blit(board, (BOARD_MARGIN, BOARD_MARGIN))
+    background.blit(board, (BOARD_MARGIN, BOARD_MARGIN))
     return board, board_cells
 
 
-def create_menu(screen):
+# NamedTuple representing surfaces on game background
+BackgroundItem = namedtuple('BackgroundItem', ['item', 'pos'])
+
+
+def create_menu(background):
     menu_font = pg.font.Font(None, MENU_FONT_SIZE)
 
     def create_menu_button(text):
@@ -41,31 +45,30 @@ def create_menu(screen):
     new_game_button = create_menu_button('New Game')
     new_game_button_pos = new_game_button.get_rect(
         center=(NEW_GAME_BUTTON_POS_X, NEW_GAME_BUTTON_POS_Y))
-    screen.blit(new_game_button, new_game_button_pos.topleft)
+    new_game = BackgroundItem(new_game_button, new_game_button_pos)
 
     # create AI Mode button
     AI_mode_button = create_menu_button('AI Mode')
     AI_mode_button_pos = AI_mode_button.get_rect(
         center=(AI_MODE_BUTTON_POS_X, AI_MODE_BUTTON_POS_Y))
-    screen.blit(AI_mode_button, AI_mode_button_pos.topleft)
+    AI_mode = BackgroundItem(AI_mode_button, AI_mode_button_pos)
 
-    # return rects for each button
-    return new_game_button_pos, AI_mode_button_pos
+    return new_game, AI_mode
 
 
-def create_game_over_message(screen):
-    background = pg.Surface(
+def create_game_over_message(background):
+    text_background = pg.Surface(
         (GAME_OVER_BACKGROUND_WIDTH, GAME_OVER_BACKGROUND_HEIGHT))
-    background.fill(GAME_OVER_BACKGROUND_COLOR)
+    text_background.fill(GAME_OVER_BACKGROUND_COLOR)
     game_over_font = pg.font.Font(None, GAME_OVER_FONT_SIZE)
     game_over_str = 'Game over :( would you like to play again?'
     game_over_text = game_over_font.render(
         game_over_str, True, GAME_OVER_TEXT_COLOR)
-    center_text(game_over_text, background)
+    center_text(game_over_text, text_background)
 
-    game_over_pos = background.get_rect(
+    game_over_pos = text_background.get_rect(
         center=((GAME_OVER_POS_X, GAME_OVER_POS_Y)))
-    return background, game_over_pos.topleft
+    return BackgroundItem(text_background, game_over_pos)
 
 
 def main():
@@ -73,14 +76,12 @@ def main():
     pg.init()
     pg.display.set_caption('2048')
 
-    # create background
     screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    screen.fill(BACKGROUND_COLOR)
     # create board
     board, board_cells = create_board(screen)
     # create menu
     new_game, AI_mode = create_menu(screen)
-    game_over, game_over_pos = create_game_over_message(screen)
+    game_over = create_game_over_message(screen)
 
     # initialize Game
     all_sprites = pg.sprite.RenderUpdates()
@@ -104,7 +105,7 @@ def main():
 
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
                 mouse_pos = pg.mouse.get_pos()
-                if new_game.collidepoint(mouse_pos):
+                if new_game.pos.collidepoint(mouse_pos):
                     game.new_game()
 
             if event.type == pg.KEYDOWN and event.key in arrow_keys and not any_moving:
@@ -127,11 +128,14 @@ def main():
         all_sprites.update()
 
         # redraw board
+        screen.fill(BACKGROUND_COLOR)
         screen.blit(board, (BOARD_MARGIN, BOARD_MARGIN))
+        screen.blit(new_game.item, new_game.pos.topleft)
+        screen.blit(AI_mode.item, AI_mode.pos.topleft)
         all_sprites.draw(screen)
-
         if game.is_game_over():
-            screen.blit(game_over, game_over_pos)
+            screen.blit(game_over.item, game_over.pos.topleft)
+
         pg.display.update()
 
 
