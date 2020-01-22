@@ -6,7 +6,7 @@ from utils import *
 class Tile(pg.sprite.Sprite):
     def __init__(self, coords_x, coords_y, board, num=2):
         pg.sprite.Sprite.__init__(self)
-        # (coords_x, coord_y) reflect tile coords on board
+        # (coords_x, coord_y) reflects tile coords on board
         self.coords_x, self.coords_y = coords_x, coords_y
         self.board = board
         self.num = num

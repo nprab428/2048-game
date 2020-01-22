@@ -86,7 +86,7 @@ class Game:
                             move = self._place_tile(i, j, prev_i, prev_j)
                             moves_queue.append(move)
 
-        # reset all tile models now that all moves are assigned
+        # reset tile models now that all moves are assigned
         for i in range(4):
             for j in range(4):
                 if self.board_model[i][j]:

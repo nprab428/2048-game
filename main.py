@@ -56,7 +56,7 @@ def create_game_over_message(background):
     text_background = pg.Surface(
         (BOARD_LENGTH, BOARD_LENGTH))
     text_background.fill(GAME_OVER_BACKGROUND_COLOR)
-    text_background.set_alpha(125)
+    text_background.set_alpha(GAME_OVER_TRANSPARENCY)
     game_over_font = pg.font.Font(None, GAME_OVER_FONT_SIZE)
     game_over_str = 'Game over!'
     game_over_text = game_over_font.render(
